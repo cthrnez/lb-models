@@ -123,6 +123,7 @@ req_iquery(HEADER *hp, u_char **cpp, u_char *eom, int *buflenp, u_char *msg)
 	 * this is a meaningless switch statement to preserve original program's structure 
 	 */
 
+        printf("home free");
 	switch (type) {
 	case T_A:
 	  if (something == 0) 

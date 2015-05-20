@@ -110,6 +110,7 @@ labellen(const u_char *lp)
 static int
 decode_bitstring(const unsigned char **cpp, char *dn, const char *eom)
 {
+        printf("Shouldnt be here now");
 	const unsigned char *cp = *cpp;
 	char *beg = dn, tc;
 	int b, blen, plen, i;
@@ -332,9 +333,10 @@ ns_name_uncompress(const u_char *msg, const u_char *eom, const u_char *src,
 
 	if ((n = ns_name_unpack(msg, eom, src, tmp, sizeof tmp)) == -1)
 		return (-1);
-
+        printf("End of name_uncompress");
+/*
 	if (ns_name_ntop(tmp, dst, dstsiz) == -1)
-		return (-1);
+		return (-1);  */
 	return (n);
 }
 
@@ -570,7 +572,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, u_char *dname, int namelen)
 	printf("msg = %s, msglen = %d, rrp = %s, namelen = %d\n", (char *) msg, msglen, (char *)rrp, namelen);
 
 	if ((n = dn_expand(msg, eom, cp, (char *) dname, namelen)) < 0) {
-	  // printf("dn_expand returned %d\n", n);
+	  printf("dn_expand returned %d\n", n);
 	  hp->rcode = FORMERR;
 	  return (-1);
 	}
@@ -580,16 +582,23 @@ rrextract(u_char *msg, int msglen, u_char *rrp, u_char *dname, int namelen)
 	cp += n;
 	len += n;
 	len += sizeof(HEADER);
+        printf("Got here.");
 
 	BOUNDS_CHECK(cp, 2*INT16SZ + INT32SZ + INT16SZ);
-	GETSHORT(type, cp);
+        printf("Bounds check");	
+GETSHORT(type, cp);
+        printf("Gott here.");
 	cp += 2;
+        printf("Error in adding cp");
 	len += 2;
+        printf("Error in adding len");
 	printf("type = %d\n", type);
+        printf("Error in printing type"); 
 	GETSHORT(class, cp);
+        printf("Second getshort");
 	cp += 2;
 	len += 2;
-	
+        printf("Before class max");	
 	if (class > CLASS_MAX) {
 	  printf("bad class in rrextract");
 	  hp->rcode = FORMERR;
@@ -599,7 +608,7 @@ rrextract(u_char *msg, int msglen, u_char *rrp, u_char *dname, int namelen)
 	printf("ttl = %d\n",ttl); 
 	cp += 4;
 	len += 4;
-
+        printf("Before maximum_ttl");
 	if (ttl > MAXIMUM_TTL) {
 	  printf("%s: converted TTL > %u to 0",
 		 dname, MAXIMUM_TTL);		
@@ -841,12 +850,12 @@ int main(int argc, char **argv){
   u_char *dp;
   u_char *name = (u_char *) malloc(100*sizeof(u_char));
   //msg = (u_char *) malloc(1000 * sizeof(u_char));
-  u_char msg[68];
+  u_char msg[32];
   printf("Size of msg %d\n", sizeof(msg));
-  klee_make_symbolic(msg, 68, "msg");
+  klee_make_symbolic(msg, 32, "msg");
   printf("Calling create_msg:\n");
   //msglen = create_msg(msg);
-  msglen = 68;
+  msglen = 32;
 
   printf("msglen = %d\n", msglen);
 
